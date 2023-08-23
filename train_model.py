@@ -38,7 +38,6 @@ SEQ_LENGTH = 127
 col_names = ["tweet", "cn", "offensive", "stance", "informativeness", "felicity"]
 data = pd.read_csv("datasets/cn_dataset_{}.csv".format(LANGUAGE), names=col_names)
 
-model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=3)
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, add_prefix_space=True)
 data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
@@ -99,7 +98,7 @@ training_args = TrainingArguments(
         load_best_model_at_end=True
     )
 
-def train(training_set, dev_set, test_set, k):
+def train(model, training_set, dev_set, test_set, k):
     trainer = Trainer(
             model=model,
             args=training_args,
@@ -138,4 +137,6 @@ for k in range(K_FOLDS):
     test_set = test_set[test_set[TARGET] > 0]
     test_set_pd = Dataset.from_pandas(test_set).map(tokenize_example)
 
-    train(training_set_pd, dev_set_pd, test_set_pd, k)
+    model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=3)
+
+    train(model, training_set_pd, dev_set_pd, test_set_pd, k)
