@@ -129,7 +129,7 @@ for k in range(K_FOLDS):
 
     train_set, dev_set = train_test_split(train_val, test_size=0.05, random_state=42+k)
 
-    training_set = training_set[training_set[TARGET] > 0]
+    train_set = train_set[train_set[TARGET] > 0]
     training_set_pd = Dataset.from_pandas(train_set).map(tokenize_example)
 
     dev_set = dev_set_pd[dev_set[TARGET] > 0]
