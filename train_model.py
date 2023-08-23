@@ -38,11 +38,17 @@ SEQ_LENGTH = 127
 col_names = ["tweet", "cn", "offensive", "stance", "informativeness", "felicity"]
 data = pd.read_csv("datasets/cn_dataset_{}.csv".format(LANGUAGE), names=col_names)
 
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, add_prefix_space=True)
+if MODEL_NAME == "bigscience/bloom-560m":
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, add_prefix_space=True, model_max_length=1024)
+else:
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, add_prefix_space=True)
+
 data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
 def tokenize_example(example):
     input_text = example["tweet"] + " [SEP] " + example["cn"]
+    if "facebook/bart" in MODEL_NAME:
+        input_text += "<eos>"
     tokenized_input = tokenizer(input_text, truncation=True)
     tokenized_input["labels"] = example[TARGET] -1
     return tokenized_input
