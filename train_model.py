@@ -129,13 +129,13 @@ for k in range(K_FOLDS):
 
     train_set, dev_set = train_test_split(train_val, test_size=0.05, random_state=42+k)
 
+    training_set = training_set[training_set[TARGET] > 0]
     training_set_pd = Dataset.from_pandas(train_set).map(tokenize_example)
-    training_set_pd = training_set_pd[training_set_pd[TARGET] > 0]
 
+    dev_set = dev_set_pd[dev_set[TARGET] > 0]
     dev_set_pd = Dataset.from_pandas(dev_set).map(tokenize_example)
-    dev_set_pd = dev_set_pd[dev_set_pd[TARGET] > 0]
-
+    
+    test_set = test_set[test_set[TARGET] > 0]
     test_set_pd = Dataset.from_pandas(test_set).map(tokenize_example)
-    test_set_pd = test_set_pd[test_set_pd[TARGET] > 0]
 
     train(training_set_pd, dev_set_pd, test_set_pd)
