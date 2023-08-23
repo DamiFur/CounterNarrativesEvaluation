@@ -19,7 +19,7 @@ import argparse
 device = torch.device("cuda")
 parser = argparse.ArgumentParser(description="Train models for automatic evaluation of counter-narratives")
 parser.add_argument('--lr', type=float, default=2e-05, help="Learning rate for training the model. Default value is 2e-05")
-parser.add_argument("--model_name", type=str, default="google/flan-t5-base")
+parser.add_argument("--model_name", type=str, default="roberta-base")
 parser.add_argument("--category", type=str, default="offensive")
 parser.add_argument("--language", type=str, default="english")
 
@@ -47,8 +47,6 @@ data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
 def tokenize_example(example):
     input_text = example["tweet"] + " [SEP] " + example["cn"]
-    if "facebook/bart" in MODEL_NAME:
-        input_text += "<eos>"
     tokenized_input = tokenizer(input_text, truncation=True)
     tokenized_input["labels"] = example[TARGET] -1
     return tokenized_input
@@ -120,7 +118,8 @@ def train(model, training_set, dev_set, test_set, k):
 
     results = trainer.predict(test_set)
 
-    filename = "./results_test_{}_{}_{}_{}_{}".format(k, LEARNING_RATE, MODEL_NAME, TARGET, LANGUAGE)
+    model_name_adapted = MODEL_NAME.replace("/", "-")
+    filename = "./results_test_{}_{}_{}_{}_{}".format(k, LEARNING_RATE, model_name_adapted, TARGET, LANGUAGE)
 
     writer = open(filename, "w")
     writer.write("{},{},{},{}\n".format(results.metrics["test_accuracy"], results.metrics["test_f1"], results.metrics["test_precision"], results.metrics["test_recall"]))
