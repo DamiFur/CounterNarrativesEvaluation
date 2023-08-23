@@ -132,7 +132,7 @@ for k in range(K_FOLDS):
     train_set = train_set[train_set[TARGET] > 0]
     training_set_pd = Dataset.from_pandas(train_set).map(tokenize_example)
 
-    dev_set = dev_set_pd[dev_set[TARGET] > 0]
+    dev_set = dev_set[dev_set[TARGET] > 0]
     dev_set_pd = Dataset.from_pandas(dev_set).map(tokenize_example)
     
     test_set = test_set[test_set[TARGET] > 0]
