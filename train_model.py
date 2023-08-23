@@ -138,4 +138,4 @@ for k in range(K_FOLDS):
     test_set = test_set[test_set[TARGET] > 0]
     test_set_pd = Dataset.from_pandas(test_set).map(tokenize_example)
 
-    train(training_set_pd, dev_set_pd, test_set_pd)
+    train(training_set_pd, dev_set_pd, test_set_pd, k)
