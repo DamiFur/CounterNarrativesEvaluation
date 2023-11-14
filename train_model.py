@@ -127,6 +127,8 @@ def train(model, training_set, dev_set, test_set, k):
     writer.write("{}\n".format(results.metrics["test_confusion_matrix"]))
     writer.close()
 
+    trainer.save_model(f"{MODEL_NAME}-{TARGET}-{LANGUAGE}-{LEARNING_RATE}")
+
 for k in range(K_FOLDS):
 
     train_val, test_set = train_test_split(data, test_size=0.1, random_state=44+k)
