@@ -124,7 +124,7 @@ def train(model, training_set, dev_set, test_set):
     results = trainer.predict(test_set)
 
     model_name_adapted = MODEL_NAME.replace("/", "-")
-    filename = "./results_test_{}_{}_{}_{}{}{}".format(LEARNING_RATE, model_name_adapted, TARGET, LANGUAGE, extended, test_zero)
+    filename = "./results_test_{}_{}_{}_{}{}{}".format(LEARNING_RATE, model_name_adapted, TARGET, LANGUAGE, extension, test_zero)
 
     writer = open(filename, "w")
     writer.write("{},{},{},{}\n".format(results.metrics["test_accuracy"], results.metrics["test_f1"], results.metrics["test_precision"], results.metrics["test_recall"]))
