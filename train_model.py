@@ -27,7 +27,6 @@ parser.add_argument("--extended", type=bool, default=False)
 args = parser.parse_args()
 
 LEARNING_RATE = args.lr
-device = torch.device("cpu")
 BATCH_SIZE = 4
 EPOCHS = 20 * (BATCH_SIZE / 16)
 MODEL_NAME = args.model_name
@@ -75,7 +74,7 @@ def compute_metrics_f1(p: EvalPrediction):
     ans = {
         'accuracy': acc,
         'f1': f1,
-        'f1_per_category': f1_all,
+        'f1_per_category': str(f1_all),
         'precision': precision,
         'recall': recall,
         'confusion_matrix': str(confusion_matrix),
@@ -90,7 +89,7 @@ if not os.path.exists(output_folder):
 training_args = TrainingArguments(
         output_dir= output_folder,
         evaluation_strategy="steps",
-        eval_steps=10,
+        eval_steps=100,
         save_total_limit=8,
         learning_rate=LEARNING_RATE,
         per_device_train_batch_size=BATCH_SIZE,
@@ -111,7 +110,6 @@ def train(model, training_set, dev_set, test_set):
             tokenizer=tokenizer,
             data_collator=data_collator,
             compute_metrics= compute_metrics_f1,
-            callbacks = [EarlyStoppingCallback(early_stopping_patience=10)]
         ) 
 
     trainer.train()
@@ -135,8 +133,6 @@ extension = "_extended" if args.extended else ""
 train_set = pd.read_csv("datasets/split/cn_dataset_train_{}{}.csv".format(LANGUAGE, extension), header=1, names=col_names).sample(frac=1, random_state=42)
 test_set = pd.read_csv("datasets/split/cn_dataset_test_{}.csv".format(LANGUAGE), header=1, names=col_names).sample(frac=1, random_state=42)
 dev_set = pd.read_csv("datasets/split/cn_dataset_dev_{}.csv".format(LANGUAGE), header=1, names=col_names).sample(frac=1, random_state=42)
-
-print(dev_set.head())
 
 training_set_pd = Dataset.from_pandas(train_set).map(tokenize_example)
 dev_set = dev_set[dev_set[TARGET] > 0]
