@@ -133,8 +133,8 @@ def train(model, training_set, dev_set, test_set):
 
 extension = "_extended" if args.extended else ""
 train_set = pd.read_csv("datasets/split/cn_dataset_train_{}{}.csv".format(LANGUAGE, extension), header=1, names=col_names).sample(frac=1, random_state=42)
-test_set = pd.read_csv("datasets/split/cn_dataset_test_{}{}.csv".format(LANGUAGE, extension), header=1, names=col_names).sample(frac=1, random_state=42)
-dev_set = pd.read_csv("datasets/split/cn_dataset_dev_{}{}.csv".format(LANGUAGE, extension), header=1, names=col_names).sample(frac=1, random_state=42)
+test_set = pd.read_csv("datasets/split/cn_dataset_test_{}.csv".format(LANGUAGE), header=1, names=col_names).sample(frac=1, random_state=42)
+dev_set = pd.read_csv("datasets/split/cn_dataset_dev_{}.csv".format(LANGUAGE), header=1, names=col_names).sample(frac=1, random_state=42)
 
 print(dev_set.head())
 
