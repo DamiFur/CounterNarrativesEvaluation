@@ -1,5 +1,4 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
 
 from transformers import DataCollatorWithPadding
 from transformers import TrainingArguments
@@ -15,6 +14,7 @@ from sklearn import metrics
 from transformers import EarlyStoppingCallback
 
 import argparse
+import os
 
 device = torch.device("cuda")
 parser = argparse.ArgumentParser(description="Train models for automatic evaluation of counter-narratives")
@@ -32,16 +32,11 @@ EPOCHS = 20 * (BATCH_SIZE / 16)
 MODEL_NAME = args.model_name
 TARGET = args.category
 LANGUAGE = args.language
-K_FOLDS = 3
 SEQ_LENGTH = 127
 
 col_names = ["tweet", "cn", "offensive", "stance", "informativeness", "felicity"]
-data = pd.read_csv("datasets/cn_dataset_{}.csv".format(LANGUAGE), names=col_names)
 
-if MODEL_NAME == "bigscience/bloom-560m":
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, add_prefix_space=True, model_max_length=1024)
-else:
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, add_prefix_space=True)
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, add_prefix_space=True)
 
 data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
@@ -102,7 +97,7 @@ training_args = TrainingArguments(
         load_best_model_at_end=True
     )
 
-def train(model, training_set, dev_set, test_set, k):
+def train(model, training_set, dev_set, test_set):
     trainer = Trainer(
             model=model,
             args=training_args,
@@ -119,7 +114,7 @@ def train(model, training_set, dev_set, test_set, k):
     results = trainer.predict(test_set)
 
     model_name_adapted = MODEL_NAME.replace("/", "-")
-    filename = "./results_test_{}_{}_{}_{}_{}".format(k, LEARNING_RATE, model_name_adapted, TARGET, LANGUAGE)
+    filename = "./results_test_{}_{}_{}_{}".format(LEARNING_RATE, model_name_adapted, TARGET, LANGUAGE)
 
     writer = open(filename, "w")
     writer.write("{},{},{},{}\n".format(results.metrics["test_accuracy"], results.metrics["test_f1"], results.metrics["test_precision"], results.metrics["test_recall"]))
@@ -127,23 +122,20 @@ def train(model, training_set, dev_set, test_set, k):
     writer.write("{}\n".format(results.metrics["test_confusion_matrix"]))
     writer.close()
 
-    trainer.save_model(f"{MODEL_NAME}-{TARGET}-{LANGUAGE}-{LEARNING_RATE}")
+    if not os.path.exists("./models"):
+        os.makedirs("./models")
+    trainer.save_model(f"./models/{MODEL_NAME}-{TARGET}-{LANGUAGE}-{LEARNING_RATE}")
 
-for k in range(K_FOLDS):
+train_set = pd.read_csv("datasets/split/cn_dataset_train_{}.csv".format(LANGUAGE), names=col_names)
+test_set = pd.read_csv("datasets/split/cn_dataset_test_{}.csv".format(LANGUAGE), names=col_names)
+dev_set = pd.read_csv("datasets/split/cn_dataset_dev_{}.csv".format(LANGUAGE), names=col_names)
 
-    train_val, test_set = train_test_split(data, test_size=0.1, random_state=44+k)
 
-    train_set, dev_set = train_test_split(train_val, test_size=0.05, random_state=44+k)
+training_set_pd = Dataset.from_pandas(train_set).map(tokenize_example)
+dev_set = dev_set[dev_set[TARGET] > 0]
+dev_set_pd = Dataset.from_pandas(dev_set).map(tokenize_example)
 
-    train_set = train_set[train_set[TARGET] > 0]
-    training_set_pd = Dataset.from_pandas(train_set).map(tokenize_example)
-
-    dev_set = dev_set[dev_set[TARGET] > 0]
-    dev_set_pd = Dataset.from_pandas(dev_set).map(tokenize_example)
-    
-    test_set = test_set[test_set[TARGET] > 0]
-    test_set_pd = Dataset.from_pandas(test_set).map(tokenize_example)
-
-    model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=3)
-
-    train(model, training_set_pd, dev_set_pd, test_set_pd, k)
+test_set = test_set[test_set[TARGET] > 0]
+test_set_pd = Dataset.from_pandas(test_set).map(tokenize_example)
+model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=3)
+train(model, training_set_pd, dev_set_pd, test_set_pd)
