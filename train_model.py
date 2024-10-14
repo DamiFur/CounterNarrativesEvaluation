@@ -23,7 +23,7 @@ parser.add_argument("--model_name", type=str, default="roberta-base")
 parser.add_argument("--category", type=str, default="offensive")
 parser.add_argument("--language", type=str, default="english")
 parser.add_argument("--extended", type=bool, default=False)
-parser.add_argument("--test_non_zero", type=bool, default=False, help="Only used when predicting Informativeness, if True, we consider predictions on examples that had 0 as their Informativeness value")
+parser.add_argument("--test_zero", type=bool, default=False, help="Only used when predicting Informativeness, if True, we consider predictions on examples that had 0 as their Informativeness value")
 
 args = parser.parse_args()
 
@@ -34,7 +34,7 @@ MODEL_NAME = args.model_name
 TARGET = args.category
 LANGUAGE = args.language
 SEQ_LENGTH = 127
-four_labels = args.test_non_zero and args.category == "informativeness"
+four_labels = args.test_zero and args.category == "informativeness"
 
 col_names = ["tweet", "cn", "offensive", "stance", "informativeness", "felicity", "tweet_id"]
 
@@ -45,7 +45,7 @@ data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 def tokenize_example(example):
     input_text = example["tweet"] + " [SEP] " + example["cn"]
     tokenized_input = tokenizer(input_text, truncation=True)
-    tokenized_input["labels"] = example[TARGET] -1
+    tokenized_input["labels"] = example[TARGET] - 1 if not four_labels else example[TARGET]
     return tokenized_input
 
 
@@ -56,7 +56,7 @@ def compute_metrics_f1(p: EvalPrediction):
     all_true_preds = [str(pred) for pred in preds]
     avrge = "macro"
     if four_labels:
-        f1_all = metrics.f1_score(all_true_labels, all_true_preds, average=None, labels=['-1','0','1','2'])
+        f1_all = metrics.f1_score(all_true_labels, all_true_preds, average=None, labels=['0','1','2','3'])
     else:
         f1_all = metrics.f1_score(all_true_labels, all_true_preds, average=None, labels=['0','1','2'])
 
@@ -139,6 +139,8 @@ train_set = pd.read_csv("datasets/split/cn_dataset_train_{}{}.csv".format(LANGUA
 test_set = pd.read_csv("datasets/split/cn_dataset_test_{}.csv".format(LANGUAGE), header=1, names=col_names).sample(frac=1, random_state=42)
 dev_set = pd.read_csv("datasets/split/cn_dataset_dev_{}.csv".format(LANGUAGE), header=1, names=col_names).sample(frac=1, random_state=42)
 
+if not four_labels:
+    train_set = train_set[train_set[TARGET] > 0]
 training_set_pd = Dataset.from_pandas(train_set).map(tokenize_example)
 if not four_labels:
     dev_set = dev_set[dev_set[TARGET] > 0]
@@ -147,5 +149,6 @@ dev_set_pd = Dataset.from_pandas(dev_set).map(tokenize_example)
 if not four_labels:
     test_set = test_set[test_set[TARGET] > 0]
 test_set_pd = Dataset.from_pandas(test_set).map(tokenize_example)
-model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=3)
+num_labels = 3 if not four_labels else 4
+model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=num_labels)
 train(model, training_set_pd, dev_set_pd, test_set_pd)
