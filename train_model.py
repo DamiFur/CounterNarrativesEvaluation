@@ -22,6 +22,7 @@ parser.add_argument('--lr', type=float, default=2e-05, help="Learning rate for t
 parser.add_argument("--model_name", type=str, default="roberta-base")
 parser.add_argument("--category", type=str, default="offensive")
 parser.add_argument("--language", type=str, default="english")
+parser.add_argument("--extended", type=bool, default=False)
 
 args = parser.parse_args()
 
@@ -82,9 +83,12 @@ def compute_metrics_f1(p: EvalPrediction):
 
     return ans
 
+output_folder = "./output_{}_{}_{}".format(LEARNING_RATE, MODEL_NAME.replace("/", "-"), BATCH_SIZE)
+if not os.path.exists(output_folder):
+    os.makedirs(output_folder)
+
 training_args = TrainingArguments(
-        output_dir="./results",
-        save_strategy="no",
+        output_dir= output_folder,
         evaluation_strategy="steps",
         eval_steps=10,
         save_total_limit=8,
@@ -127,9 +131,10 @@ def train(model, training_set, dev_set, test_set):
         os.makedirs("./models")
     trainer.save_model(f"./models/{MODEL_NAME}-{TARGET}-{LANGUAGE}-{LEARNING_RATE}")
 
-train_set = pd.read_csv("datasets/split/cn_dataset_train_{}.csv".format(LANGUAGE), header=1, names=col_names)
-test_set = pd.read_csv("datasets/split/cn_dataset_test_{}.csv".format(LANGUAGE), header=1, names=col_names)
-dev_set = pd.read_csv("datasets/split/cn_dataset_dev_{}.csv".format(LANGUAGE), header=1, names=col_names)
+extension = "_extended" if args.extended else ""
+train_set = pd.read_csv("datasets/split/cn_dataset_train_{}{}.csv".format(LANGUAGE, extension), header=1, names=col_names).sample(frac=1, random_state=42)
+test_set = pd.read_csv("datasets/split/cn_dataset_test_{}{}.csv".format(LANGUAGE, extension), header=1, names=col_names).sample(frac=1, random_state=42)
+dev_set = pd.read_csv("datasets/split/cn_dataset_dev_{}{}.csv".format(LANGUAGE, extension), header=1, names=col_names).sample(frac=1, random_state=42)
 
 print(dev_set.head())
 
