@@ -83,7 +83,7 @@ def compute_metrics_f1(p: EvalPrediction):
     return ans
 
 training_args = TrainingArguments(
-        output_dir="./results_cn_eval_{}".format(MODEL_NAME.replace("/", "-")),
+        save_strategy="no",
         evaluation_strategy="steps",
         eval_steps=10,
         save_total_limit=8,
