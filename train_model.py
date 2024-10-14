@@ -134,7 +134,7 @@ def train(model, training_set, dev_set, test_set):
 
     if not os.path.exists("./models"):
         os.makedirs("./models")
-    trainer.save_model(f"./models/{MODEL_NAME}-{TARGET}-{LANGUAGE}-{LEARNING_RATE}")
+    trainer.save_model(f"./models/{model_name_adapted}-{TARGET}-{LANGUAGE}-{LEARNING_RATE}")
 
 
 train_set = pd.read_csv("datasets/split/cn_dataset_train_{}{}.csv".format(LANGUAGE, extension), header=1, names=col_names).sample(frac=1, random_state=42)
