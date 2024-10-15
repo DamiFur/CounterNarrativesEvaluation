@@ -49,6 +49,5 @@ for folder in os.listdir("counter-narratives"):
             hate_tweet = f.readline()
             # print(line)
             cn = f.readline()
-            example = tokenizer(hate_tweet + " [SEP] " + cn)
             print(cn)
-            print(classifier(example))
+            print(classifier(hate_tweet + " [SEP] " + cn))
