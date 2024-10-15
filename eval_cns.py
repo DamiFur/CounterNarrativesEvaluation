@@ -28,7 +28,7 @@ test_zero = "_test_zero" if four_labels else ""
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, add_prefix_space=True)
 num_labels = 4 if four_labels else 3
 model_name_adapted = MODEL_NAME.replace("/", "-")
-pretrained_model_name = "{}_{}_{}_{}{}{}".format(LEARNING_RATE, model_name_adapted, TARGET, LANGUAGE, extension, test_zero)
+pretrained_model_name = "{}_{}_{}_{}{}{}".format(model_name_adapted, TARGET, LANGUAGE, LEARNING_RATE, extension, test_zero)
 model = AutoModelForSequenceClassification.from_pretrained(f"models/{pretrained_model_name}", num_labels=num_labels)
 
 classifier = pipeline("text-classification", model=model, tokenizer=tokenizer)
