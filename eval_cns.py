@@ -16,31 +16,50 @@ LEARNING_RATE = args.lr
 BATCH_SIZE = 4
 EPOCHS = 20 * (BATCH_SIZE / 16)
 MODEL_NAME = args.model_name
-TARGET = args.category
 LANGUAGE = args.language
 SEQ_LENGTH = 127
-four_labels = args.test_zero and args.category == "informativeness"
+target = args.category
+model_name_adapted = MODEL_NAME.replace("/", "-")
 extension = "_extended" if args.extended else ""
-test_zero = "_test_zero" if four_labels else ""
-extension = "_extended" if args.extended else ""
-test_zero = "_test_zero" if four_labels else ""
+
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, add_prefix_space=True)
-num_labels = 4 if four_labels else 3
-id2label = {0: "0", 1: "1", 2: "2"} if not four_labels else {0: "0", 1: "1", 2: "2", 3: "3"}
-label2id = {"0": 0, "1": 1, "2": 2} if not four_labels else {"0": 0, "1": 1, "2": 2, "3": 3}
-model_name_adapted = MODEL_NAME.replace("/", "-")
-pretrained_model_name = "{}-{}-{}-{}{}{}".format(model_name_adapted, TARGET, LANGUAGE, LEARNING_RATE, extension, test_zero)
-model = AutoModelForSequenceClassification.from_pretrained(f"models/{pretrained_model_name}", num_labels=num_labels, id2label = id2label, label2id = label2id)
-
-classifier = pipeline("text-classification", model=model, tokenizer=tokenizer)
 
 def tokenize_example(example):
     input_text = example["tweet"] + " [SEP] " + example["cn"]
     return tokenizer(input_text, truncation=True)
 
+# If the folder does not exist, create it
+if not os.path.exists("predictions"):
+    os.makedirs("predictions")
+
+results = {}
+
+four_labels = target == "informativeness" and args.test_zero
+test_zero = "_test_zero" if four_labels else ""
+num_labels = 4 if four_labels else 3
+
+id2label = {0: "0", 1: "1", 2: "2"} if not four_labels else {0: "0", 1: "1", 2: "2", 3: "3"}
+label2id = {"0": 0, "1": 1, "2": 2} if not four_labels else {"0": 0, "1": 1, "2": 2, "3": 3}
+pretrained_model_name = "{}-{}-{}-{}{}{}".format(model_name_adapted, target, LANGUAGE, LEARNING_RATE, extension, test_zero)
+model = AutoModelForSequenceClassification.from_pretrained(f"models/{pretrained_model_name}", num_labels=num_labels, id2label = id2label, label2id = label2id)
+classifier = pipeline("text-classification", model=model, tokenizer=tokenizer)
+
+
 # traverse all folders on 'counter-narratives' folder
 for folder in os.listdir("counter-narratives"):
+    splitted_folder = folder.split("_")
+    model = splitted_folder[1]
+    language = splitted_folder[2]
+    learning_strategy = splitted_folder[3]
+    arg_info = splitted_folder[4]
+    cn_strategy = splitted_folder[5]
+    key = f"{model}-{language}-{learning_strategy}-{arg_info}-{cn_strategy}"
+    if key not in results:
+        results[key] = []
+
+    w = open("predictions/" + folder + "_predictions", "w")
+
     # traverse all files in the folder
     for file in os.listdir("counter-narratives/" + folder):
         # read the first line from file
@@ -52,4 +71,13 @@ for folder in os.listdir("counter-narratives"):
             # print(line)
             cn = f.readline()
             print(cn)
-            print(classifier(hate_tweet + " [SEP] " + cn))
+            prediction = classifier(hate_tweet + " [SEP] " + cn)
+            w.write(hate_tweet + "\t" + cn + "\t" + str(prediction) + "\n")
+            results[key].append(prediction)
+    w.close()
+
+output = open(f"predictions/results_{target}.csv", 'w')
+
+for key in results:
+    output.write(key.replace("-", "\t") + "\t" + str(results[key]) + "\n")
+output.close()
