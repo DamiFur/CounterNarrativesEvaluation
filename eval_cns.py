@@ -41,7 +41,7 @@ num_labels = 4 if four_labels else 3
 
 id2label = {0: "0", 1: "1", 2: "2"} if not four_labels else {0: "0", 1: "1", 2: "2", 3: "3"}
 label2id = {"0": 0, "1": 1, "2": 2} if not four_labels else {"0": 0, "1": 1, "2": 2, "3": 3}
-pretrained_model_name = "{}-{}-{}-{}{}{}".format(model_name_adapted, target, LANGUAGE, LEARNING_RATE, extension, test_zero)
+pretrained_model_name = "{}_{}_{}_{}{}{}".format(LEARNING_RATE, model_name_adapted, target, LANGUAGE, extension, test_zero)
 model = AutoModelForSequenceClassification.from_pretrained(f"models/{pretrained_model_name}", num_labels=num_labels, id2label = id2label, label2id = label2id)
 classifier = pipeline("text-classification", model=model, tokenizer=tokenizer)
 
@@ -63,7 +63,7 @@ for folder in os.listdir("counter-narratives"):
     # traverse all files in the folder
     for file in os.listdir("counter-narratives/" + folder):
         # read the first line from file
-        with open("counter-narratives/" + folder + "/" + file) as f:
+        with open("counter-narratives/" + folder + "/" + file, "r") as f:
             # read the first line from file
             print(folder)
             print(file)
@@ -76,7 +76,7 @@ for folder in os.listdir("counter-narratives"):
             results[key].append(prediction)
     w.close()
 
-output = open(f"predictions/results_{target}.csv", 'w')
+output = open(f"predictions/results_{target}.tsv", 'w')
 
 for key in results:
     output.write(key.replace("-", "\t") + "\t" + str(results[key]) + "\n")
