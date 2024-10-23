@@ -124,7 +124,8 @@ def train(model, training_set, dev_set, test_set):
     results = trainer.predict(test_set)
 
     model_name_adapted = MODEL_NAME.replace("/", "-")
-    filename = "./results_test_{}_{}_{}_{}{}{}".format(LEARNING_RATE, model_name_adapted, TARGET, LANGUAGE, extension, test_zero)
+    pretrained_model_name = "{}_{}_{}_{}{}{}".format(LEARNING_RATE, model_name_adapted, TARGET, LANGUAGE, extension, test_zero)
+    filename = "./results_test_{}".format(pretrained_model_name)
 
     writer = open(filename, "w")
     writer.write("{},{},{},{}\n".format(results.metrics["test_accuracy"], results.metrics["test_f1"], results.metrics["test_precision"], results.metrics["test_recall"]))
@@ -134,7 +135,7 @@ def train(model, training_set, dev_set, test_set):
 
     if not os.path.exists("./models"):
         os.makedirs("./models")
-    trainer.save_model(f"./models/{model_name_adapted}-{TARGET}-{LANGUAGE}-{LEARNING_RATE}")
+    trainer.save_model(f"./models/{pretrained_model_name}")
 
 
 train_set = pd.read_csv("datasets/split/cn_dataset_train_{}{}.csv".format(LANGUAGE, extension), header=1, names=col_names).sample(frac=1, random_state=42)
