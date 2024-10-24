@@ -1,6 +1,7 @@
 import argparse
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, pipeline
 import os
+import statistics
 
 parser = argparse.ArgumentParser(description="Train models for automatic evaluation of counter-narratives")
 parser.add_argument('--lr', type=float, default=2e-05, help="Learning rate for training the model. Default value is 2e-05")
@@ -65,6 +66,7 @@ for folder in os.listdir("counter-narratives"):
         # read the first line from file
         with open("counter-narratives/" + folder + "/" + file, "r") as f:
             # read the first line from file
+            tweet_id = file.split("_")[-1]
             print(folder)
             print(file)
             hate_tweet = f.readline()
@@ -72,12 +74,13 @@ for folder in os.listdir("counter-narratives"):
             cn = f.readline()
             print(cn)
             prediction = classifier(hate_tweet + " [SEP] " + cn)
-            w.write(hate_tweet + "\t" + cn + "\t" + str(prediction) + "\n")
-            results[key].append(prediction)
+            label = prediction[0]["label"]
+            w.write(f"{tweet_id}\t{hate_tweet}\t{cn}\t{label}\n")
+            results[key].append(int(label))
     w.close()
 
 output = open(f"predictions/results_{target}.tsv", 'w')
 
 for key in results:
-    output.write(key.replace("-", "\t") + "\t" + str(results[key]) + "\n")
+    output.write(key.replace("-", "\t") + "\t" + str(statistics.mean(results[key])) + "\n")
 output.close()
