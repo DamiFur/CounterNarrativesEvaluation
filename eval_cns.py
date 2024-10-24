@@ -55,7 +55,7 @@ for folder in os.listdir("counter-narratives"):
     learning_strategy = splitted_folder[3]
     arg_info = splitted_folder[4]
     cn_strategy = splitted_folder[5]
-    key = f"{model}-{language}-{learning_strategy}-{arg_info}-{cn_strategy}"
+    key = f"{model}_{language}_{learning_strategy}_{arg_info}_{cn_strategy}"
     if key not in results:
         results[key] = []
 
@@ -74,13 +74,13 @@ for folder in os.listdir("counter-narratives"):
             cn = f.readline()
             print(cn)
             prediction = classifier(hate_tweet + " [SEP] " + cn)
-            label = prediction[0]["label"]
+            label = int(prediction[0]["label"]) + 1
             w.write(f"{tweet_id}\t{hate_tweet}\t{cn}\t{label}\n")
-            results[key].append(int(label))
+            results[key].append(label)
     w.close()
 
 output = open(f"predictions/results_{target}.tsv", 'w')
 
 for key in results:
-    output.write(key.replace("-", "\t") + "\t" + str(statistics.mean(results[key])) + "\n")
+    output.write(key.replace("_", "\t") + "\t" + str(statistics.mean(results[key])) + "\n")
 output.close()
