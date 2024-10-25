@@ -81,7 +81,7 @@ for folder in os.listdir("counter-narratives"):
             results[key].append(label)
     w.close()
 
-output = open(f"predictions/results_{target}.tsv", 'w')
+output = open(f"predictions/results_{target}_{language}.tsv", 'w')
 
 for key in results:
     output.write(key.replace("_", "\t") + "\t" + str(statistics.mean(results[key])) + "\n")
