@@ -1,0 +1,88 @@
+google-flan-t5-xl	spanish	finetuned		a	1.1481481481481481
+mistralai-Mistral-7B-Instruct-v0.2	spanish	finetuned	all		3
+google-flan-t5-base	spanish	finetuned			2.888888888888889
+google-flan-t5-xl	spanish	finetuned	premises		1.1851851851851851
+mistralai-Mistral-7B-Instruct-v0.2	spanish	fewshot-5	premises		2.4074074074074074
+meta-llama-Meta-Llama-3.1-8B-Instruct	spanish	finetuned	premises	c	2.9130434782608696
+google-flan-t5-base	spanish	finetuned	collective	b	3
+google-flan-t5-base	spanish	finetuned	all		2.8518518518518516
+Qwen-Qwen2-0.5B-Instruct	spanish	finetuned	premises	a	3
+mistralai-Mistral-7B-Instruct-v0.2	spanish	finetuned	collective	b	2.8095238095238093
+meta-llama-Meta-Llama-3.1-8B-Instruct	spanish	finetuned	premises	a	3
+Qwen-Qwen2-7B-Instruct	spanish	fewshot-5	premises		2.185185185185185
+meta-llama-Meta-Llama-3.1-8B-Instruct	spanish	finetuned	collective	b	3
+Qwen-Qwen2-7B-Instruct	spanish	fewshot-5	all		2.3333333333333335
+google-flan-t5-xl	spanish	finetuned		c	1.0434782608695652
+google-flan-t5-base	spanish	fewshot-2	all		1.4074074074074074
+gpt-4o-mini	spanish	fewshot-5	premises		3
+Qwen-Qwen2-0.5B-Instruct	spanish	finetuned	collective	b	2.9523809523809526
+google-flan-t5-base	spanish	fewshot-2			1.2222222222222223
+Qwen-Qwen2-0.5B-Instruct	spanish	finetuned	premises	c	3
+google-flan-t5-xl	spanish	finetuned		b	1.1428571428571428
+Qwen-Qwen2-0.5B-Instruct	spanish	finetuned		c	2.9130434782608696
+Qwen-Qwen2-7B-Instruct	spanish	finetuned	all		3
+mistralai-Mistral-7B-Instruct-v0.2	spanish	finetuned		c	3
+Qwen-Qwen2-0.5B-Instruct	spanish	fewshot-5	premises		1.4074074074074074
+meta-llama-Meta-Llama-3.1-8B-Instruct	spanish	fewshot-5	collective		2.962962962962963
+Qwen-Qwen2-7B-Instruct	spanish	finetuned		a	3
+google-flan-t5-xl	spanish	fewshot-2	premises		2.6666666666666665
+mistralai-Mistral-7B-Instruct-v0.2	spanish	finetuned		b	2.7142857142857144
+google-flan-t5-xl	spanish	fewshot-2	collective		1.8148148148148149
+google-flan-t5-base	spanish	finetuned	premises	c	2.8260869565217392
+Qwen-Qwen2-0.5B-Instruct	spanish	finetuned		b	2.9047619047619047
+meta-llama-Meta-Llama-3.1-8B-Instruct	spanish	finetuned	collective		3
+Qwen-Qwen2-0.5B-Instruct	spanish	finetuned		a	3
+mistralai-Mistral-7B-Instruct-v0.2	spanish	finetuned		a	2.962962962962963
+Qwen-Qwen2-7B-Instruct	spanish	finetuned	collective		3
+mistralai-Mistral-7B-Instruct-v0.2	spanish	fewshot-5	all		1.8518518518518519
+Qwen-Qwen2-7B-Instruct	spanish	fewshot-5	collective		2.925925925925926
+Qwen-Qwen2-7B-Instruct	spanish	finetuned		b	2.9523809523809526
+google-flan-t5-base	spanish	finetuned	premises	a	2.740740740740741
+google-flan-t5-base	spanish	finetuned	collective		3
+Qwen-Qwen2-7B-Instruct	spanish	finetuned	collective	b	2.9523809523809526
+meta-llama-Meta-Llama-3.1-8B-Instruct	spanish	finetuned	premises		3
+Qwen-Qwen2-7B-Instruct	spanish	finetuned		c	3
+mistralai-Mistral-7B-Instruct-v0.2	spanish	fewshot-5			2.6666666666666665
+mistralai-Mistral-7B-Instruct-v0.2	spanish	finetuned	collective		3
+Qwen-Qwen2-7B-Instruct	spanish	fewshot-5			2.8518518518518516
+Qwen-Qwen2-0.5B-Instruct	spanish	finetuned	premises		3
+mistralai-Mistral-7B-Instruct-v0.2	spanish	fewshot-5	collective		2.6296296296296298
+Qwen-Qwen2-0.5B-Instruct	spanish	finetuned			3
+Qwen-Qwen2-0.5B-Instruct	spanish	fewshot-5	all		1.8518518518518519
+google-flan-t5-base	spanish	finetuned	premises		3
+google-flan-t5-xl	spanish	finetuned	collective		1.3333333333333333
+mistralai-Mistral-7B-Instruct-v0.2	spanish	finetuned			3
+Qwen-Qwen2-0.5B-Instruct	spanish	fewshot-5			2.074074074074074
+google-flan-t5-xl	spanish	finetuned	all		1.2222222222222223
+meta-llama-Meta-Llama-3.1-8B-Instruct	spanish	finetuned		a	3
+google-flan-t5-xl	spanish	finetuned	collective	b	1.0952380952380953
+google-flan-t5-xl	spanish	finetuned	premises	c	1.1304347826086956
+Qwen-Qwen2-7B-Instruct	spanish	finetuned	premises	a	2.962962962962963
+Qwen-Qwen2-7B-Instruct	spanish	finetuned			2.962962962962963
+meta-llama-Meta-Llama-3.1-8B-Instruct	spanish	finetuned	all		3
+meta-llama-Meta-Llama-3.1-8B-Instruct	spanish	finetuned		b	3
+google-flan-t5-xl	spanish	finetuned	premises	a	1.1111111111111112
+meta-llama-Meta-Llama-3.1-8B-Instruct	spanish	finetuned		c	2.9130434782608696
+Qwen-Qwen2-7B-Instruct	spanish	finetuned	premises	c	3
+google-flan-t5-base	spanish	fewshot-2	collective		1.5185185185185186
+gpt-4o-mini	spanish	fewshot-5			3
+google-flan-t5-xl	spanish	fewshot-2	all		2.4814814814814814
+meta-llama-Meta-Llama-3.1-8B-Instruct	spanish	fewshot-5	premises		1.6666666666666667
+meta-llama-Meta-Llama-3.1-8B-Instruct	spanish	finetuned			3
+gpt-4o-mini	spanish	fewshot-5	all		3
+mistralai-Mistral-7B-Instruct-v0.2	spanish	finetuned	premises		3
+mistralai-Mistral-7B-Instruct-v0.2	spanish	finetuned	premises	c	3
+google-flan-t5-xl	spanish	fewshot-2			1.5925925925925926
+Qwen-Qwen2-0.5B-Instruct	spanish	finetuned	collective		2.962962962962963
+google-flan-t5-base	spanish	finetuned		a	2.6296296296296298
+Qwen-Qwen2-0.5B-Instruct	spanish	fewshot-5	collective		2.074074074074074
+meta-llama-Meta-Llama-3.1-8B-Instruct	spanish	fewshot-5			2.962962962962963
+google-flan-t5-base	spanish	fewshot-2	premises		1.3333333333333333
+Qwen-Qwen2-0.5B-Instruct	spanish	finetuned	all		3
+mistralai-Mistral-7B-Instruct-v0.2	spanish	finetuned	premises	a	3
+google-flan-t5-base	spanish	finetuned		b	3
+Qwen-Qwen2-7B-Instruct	spanish	finetuned	premises		3
+google-flan-t5-xl	spanish	finetuned			1.4444444444444444
+google-flan-t5-base	spanish	finetuned		c	2.782608695652174
+meta-llama-Meta-Llama-3.1-8B-Instruct	spanish	fewshot-5	all		2.5555555555555554
+gpt-4o-mini	spanish	fewshot-5	collective		2.888888888888889
