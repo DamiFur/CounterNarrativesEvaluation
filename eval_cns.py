@@ -51,7 +51,9 @@ classifier = pipeline("text-classification", model=model, tokenizer=tokenizer)
 for folder in os.listdir("counter-narratives"):
     splitted_folder = folder.split("_")
     model = splitted_folder[1]
-    language = splitted_folder[2]
+    language = splitted_folder[2] if splitted_folder[2] == "english" else "spanish"
+    if language != LANGUAGE:
+        continue
     learning_strategy = splitted_folder[3]
     arg_info = splitted_folder[4]
     cn_strategy = splitted_folder[5]
@@ -59,7 +61,7 @@ for folder in os.listdir("counter-narratives"):
     if key not in results:
         results[key] = []
 
-    w = open("predictions/" + folder + "_predictions", "w")
+    w = open("predictions/" + folder + "_predictions_" + target, "w")
 
     # traverse all files in the folder
     for file in os.listdir("counter-narratives/" + folder):
